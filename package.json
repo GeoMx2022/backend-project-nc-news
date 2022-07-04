@@ -32,8 +32,7 @@
   "dependencies": {
     "express": "^4.18.1",
     "jest-sorted": "^1.0.14",
-    "pg": "^8.7.3",
-    "psql": "^0.0.1"
+    "pg": "^8.7.3"
   },
   "jest": {
     "setupFilesAfterEnv": [
