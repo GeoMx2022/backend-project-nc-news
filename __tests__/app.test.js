@@ -34,16 +34,51 @@ describe("NC News App", () => {
             })
           })
         })
-    });    
-});
-
-describe("NC News Errors", () => {
-  test("Status: 404 for route NOT FOUND", () => {
-    return request(app)
-      .get("/api/topicz")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found - Invalid Path");
+    }); 
+      describe("GET /api/topics Error Handling", () => {
+        test("Status: 404 for route NOT FOUND", () => {
+          return request(app)
+            .get("/api/topicz")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+            expect(msg).toBe("Not Found - Invalid Path");
+       });
+    });
+  });
+    describe("GET /api/articles/:article_id", () => {
+      test("Status: 200 and replies with an article JSON object", () => {
+          return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body }) => {
+              expect(body.article).toEqual({
+                article_id: 1,  
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: "2020-07-09T20:11:00.000Z",
+                votes: 100
+              });
+            });
       });
+    });
+      describe("GET /api/articles/:article_id Error Handling", () => {
+        test("Status: 404 for route NOT FOUND", () => {
+        return request(app)
+          .get("/api/articles/9999999")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found - Invalid Path");
+        });
+      });
+      test("Status: 400 for route BAD REQUEST", () => {
+        return request(app)
+          .get("/api/articles/notAnId")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
   });
 });

@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
-const { getTopics } = require("./controllers/news.controllers");
+const { getTopics, getArticleById } = require("./controllers/news.controllers");
 
 // SERVER MIDDLEWARE
 app.use(express.json());
 app.get("/api/topics", getTopics);
+app.get("/api/articles/:article_id", getArticleById)
 
 // ERROR HANDLING MIDDLEWARE
 //Invalid Path
