@@ -75,7 +75,24 @@ describe("NC News App", () => {
           });
     });
   });
-  
+ 
+  describe("GET /api/users", () => {
+    test("Status: 200 and replies with a JSON object of users", () => {
+      return request(app) 
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((user) => {
+          expect(user).toEqual(expect.objectContaining({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String)
+            }));
+          });
+      });
+    });
+  }); 
   describe("PATCH /api/articles/:article_id", () => {
     test("Status: 200 and replies with an updated article JSON object - Votes increment", () => {
       const articleUpdates = {
