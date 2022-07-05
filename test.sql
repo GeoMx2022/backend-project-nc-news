@@ -1,4 +1,7 @@
 \c nc_news_test
 
-SELECT * FROM articles
-WHERE article_id = 1;
+UPDATE articles
+SET 
+    votes = votes + 5
+WHERE article_id = 1
+RETURNING *; 

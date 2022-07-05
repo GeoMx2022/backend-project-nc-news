@@ -74,5 +74,38 @@ describe("NC News App", () => {
           expect(msg).toBe("Bad Request - Invalid Input");
           });
     });
-  });    
+  });
+  
+  describe("PATCH /api/articles/:article_id", () => {
+    test("Status: 200 and replies with an updated article JSON object - Votes increment", () => {
+      const articleUpdates = {
+        inc_votes: 5
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(articleUpdates)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual({
+            article_id: 1,  
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 105
+            });
+          });
+    });
+    test("Status: 400 for route BAD REQUEST - Not a valid patch input on votes", () => {
+      const articleUpdates = {};
+      return request(app)
+        .patch("/api/articles/1")
+        .send(articleUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+  });
 });
