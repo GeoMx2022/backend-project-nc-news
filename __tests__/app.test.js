@@ -97,8 +97,32 @@ describe("NC News App", () => {
             });
           });
     });
-    test("Status: 400 for route BAD REQUEST - Not a valid patch input on votes", () => {
+    test("Status: 400 for route BAD REQUEST - Empty patch input on votes", () => {
       const articleUpdates = {};
+      return request(app)
+        .patch("/api/articles/1")
+        .send(articleUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Invalid key on inc_votes", () => {
+      const articleUpdates = { 
+        enc_botes: 5
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(articleUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Invalid values in inc_votes", () => {
+      const articleUpdates = { 
+        inc_votes: "Hi"
+      };
       return request(app)
         .patch("/api/articles/1")
         .send(articleUpdates)
