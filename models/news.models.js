@@ -19,3 +19,13 @@ exports.fetchArticleById = (article_id) => {
         return articleData;
     });
 };
+
+exports.fetchUsers = () => {
+    return db.query("SELECT * FROM users;").then((users) => {
+        const usersData = users.rows;
+        if (!usersData) {
+            return [];
+        }
+        return usersData;
+    });
+};
