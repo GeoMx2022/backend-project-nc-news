@@ -13,7 +13,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
   
 //Psql Error
 exports.handlePsqlErrors = (err, req, res, next) => {
-    if (err.code === '22P02') {
+    if (err.code === '22P02' || '23502') {
         res.status(400).send({ msg: err.msg || 'Bad Request - Invalid Input' });
     } else next(err);
 };

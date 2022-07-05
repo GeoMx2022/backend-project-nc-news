@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { getTopics, getArticleById, getUsers } = require("./controllers/news.controllers");
+const { getTopics, getArticleById, updateArticleById, getUsers } = require("./controllers/news.controllers");
 const { handleInvalidPaths, handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./app.errors") 
 
 // SERVER MIDDLEWARE
@@ -8,6 +8,7 @@ app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
+app.patch("/api/articles/:article_id", updateArticleById);
 
 // ERROR HANDLING MIDDLEWARE
 app.use("*", handleInvalidPaths);
