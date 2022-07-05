@@ -23,11 +23,10 @@ exports.fetchArticleById = (article_id) => {
 exports.fetchUsers = () => {
     return db.query("SELECT * FROM users;").then((users) => {
         const usersData = users.rows;
-        if (!usersData) {
-            return [];
-        }
         return usersData;
-        
+    })
+}
+
 exports.modifyArticleById = (article_id, inc_votes) => {
     return db.query("UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;", [inc_votes, article_id]).then((article) => {
         const updatedArticleData = article.rows[0];
