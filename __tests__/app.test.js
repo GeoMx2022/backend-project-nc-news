@@ -54,13 +54,14 @@ describe("NC News App", () => {
             author: "butter_bridge",
             body: "I find this existence challenging",
             created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100
+            votes: 100,
+            comment_count: "11"
             });
           });
     });
     test("Status: 404 for possibly valid article id but NOT FOUND in this database", () => {
       return request(app)
-        .get("/api/articles/9999999")
+        .get("/api/articles/99999999")
         .expect(404)
         .then(({ body: { msg } }) => {
         expect(msg).toBe("Not Found");
@@ -68,7 +69,7 @@ describe("NC News App", () => {
     });
     test("Status: 400 for route BAD REQUEST - Not a valid article id", () => {
         return request(app)
-          .get("/api/articles/notAnId")
+          .get("/api/articles/notAnIdNo")
           .expect(400)
           .then(({ body: { msg } }) => {
           expect(msg).toBe("Bad Request - Invalid Input");
