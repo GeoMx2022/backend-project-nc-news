@@ -174,4 +174,24 @@ describe("NC News App", () => {
         });
     });
   });
+
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("Status: 200 and replies with an array of comments objects", () => {
+      return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+       .then(({ body }) => {
+          expect(body.comments).toHaveLength(2);
+          body.comments.forEach((comment) => {
+          expect(comment).toEqual(expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            created_at: expect.any(String)
+            }));
+          });
+      });
+    });
+  });
 });
