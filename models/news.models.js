@@ -22,12 +22,15 @@ exports.fetchArticles = () => {
 };
 
 exports.fetchArticleById = (article_id) => {
-    return db.query("SELECT articles.*, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles INNER JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;;", [article_id]).then((article) => {
-        const articleData = article.rows[0]
+    return db.query("SELECT articles.*, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles INNER JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;", [article_id]).then((article) => {
+        const articleData = article.rows
         if (!articleData) {
             return Promise.reject({ status: 404, msg: "Not Found"});
+        } else if (articleData.length === 0) {
+            return Promise.reject({ status: 404, msg: "Article id does not exist"})
+        } else {
+            return articleData[0];
         }
-        return articleData;
     });
 };
 
@@ -36,9 +39,11 @@ exports.fetchCommentsByArticleId = (article_id) => {
         const commentData = comments.rows
         if (!commentData) {
             return Promise.reject({ status: 404, msg: "Not Found"});
+        } else if (commentData.length === 0) {
+            return Promise.reject({ status: 404, msg: "Not Found - Article id does not exist OR No comments for a valid article id"})
+        } else {
+            return commentData;
         }
-        console.log(commentData)
-        return commentData;
     });
 };
 

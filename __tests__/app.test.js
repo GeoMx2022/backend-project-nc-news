@@ -105,7 +105,7 @@ describe("NC News App", () => {
         .get("/api/articles/99999999")
         .expect(404)
         .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found");
+        expect(msg).toBe("Article id does not exist");
         });
     });
     test("Status: 400 for route BAD REQUEST - Not a valid article id", () => {
@@ -175,7 +175,7 @@ describe("NC News App", () => {
     });
   });
 
-  describe("GET /api/articles/:article_id/comments", () => {
+  describe.only("GET /api/articles/:article_id/comments", () => {
     test("Status: 200 and replies with an array of comments objects", () => {
       return request(app)
         .get("/api/articles/3/comments")
@@ -192,6 +192,22 @@ describe("NC News App", () => {
             }));
           });
       });
+    });
+    test("Status: 404 for valid article id but comment NOT FOUND in this database", () => {
+      return request(app)
+        .get("/api/articles/7/comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not Found - Article id does not exist OR No comments for a valid article id");
+        });
+    });
+    test("Status: 404 for possibly valid article id but NOT FOUND in this database", () => {
+      return request(app)
+        .get("/api/articles/99999/comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not Found - Article id does not exist OR No comments for a valid article id");
+        });
     });
   });
 });
