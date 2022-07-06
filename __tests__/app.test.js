@@ -94,6 +94,7 @@ describe("NC News App", () => {
       });
     });
   }); 
+  
   describe("PATCH /api/articles/:article_id", () => {
     test("Status: 200 and replies with an updated article JSON object - Votes increment", () => {
       const articleUpdates = {
