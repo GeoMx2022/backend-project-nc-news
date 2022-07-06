@@ -59,7 +59,7 @@ describe("NC News App", () => {
     });
   });   
 
-  describe("GET /api/articles", () => {
+  describe.only("GET /api/articles", () => {
     test("Status: 200 and replies with an array of article objects", () => {
       return request(app) 
         .get("/api/articles")
@@ -79,6 +79,30 @@ describe("NC News App", () => {
             }));
           });
       });
+    });
+    test("Status: 200 and replies with default sort order of date: descending", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", { coerce: true, descending: true });
+        });
+    });
+    test("Status: 200 and replies with sort order of comment_count: ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=comment_count&&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("comment_count", { coerce: true, descending: false });
+        });
+    });
+    test("Status: 200 and replies with sort order of article_id: ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author&&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("author", { descending: false });
+        });
     });
   }); 
 
@@ -175,7 +199,7 @@ describe("NC News App", () => {
     });
   });
 
-  describe.only("GET /api/articles/:article_id/comments", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
     test("Status: 200 and replies with an array of comments objects", () => {
       return request(app)
         .get("/api/articles/3/comments")

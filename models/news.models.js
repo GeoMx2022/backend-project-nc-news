@@ -14,8 +14,19 @@ exports.fetchUsers = () => {
     });
 };
 
-exports.fetchArticles = () => {
-    return db.query("SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;").then((articles) => {
+exports.fetchArticles = (sort_by = "created_at", order = "desc") => {
+    const validSortOptions = ["article_id", "title", "topic", "author", "created_at", "votes", "comment_count"];
+    const validOrderOptions = ["asc", "desc"];
+
+    if (!validSortOptions.includes(sort_by)) {
+        return Promise.reject({ msg: "Invalid sort_by query" });
+      } else if (!validSortOptions.includes(sort_by) && !validOrderOptions.includes(order)) {
+        return Promise.reject({ msg: "Invalid sort_by or order query" });
+      } else if (!validOrderOptions.includes(order)) {
+        return Promise.reject({ msg: "Invalid order query" });
+      }
+
+    return db.query(`SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`).then((articles) => {
         const articlesData = articles.rows;
         return articlesData;
     });
