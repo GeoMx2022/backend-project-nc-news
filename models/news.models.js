@@ -31,6 +31,17 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
+exports.fetchCommentsByArticleId = (article_id) => {
+    return db.query("SELECT comments.comment_id, comments.body, comments.votes, comments.author, comments.created_at FROM comments WHERE comments.article_id = $1;", [article_id]).then((comments) => {
+        const commentData = comments.rows
+        if (!commentData) {
+            return Promise.reject({ status: 404, msg: "Not Found"});
+        }
+        console.log(commentData)
+        return commentData;
+    });
+};
+
 exports.modifyArticleById = (article_id, inc_votes) => {
     return db.query("UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;", [inc_votes, article_id]).then((article) => {
         const updatedArticleData = article.rows[0];
