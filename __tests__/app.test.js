@@ -175,7 +175,7 @@ describe("NC News App", () => {
     });
   });
 
-  describe.only("GET /api/articles/:article_id/comments", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
     test("Status: 200 and replies with an array of comments objects", () => {
       return request(app)
         .get("/api/articles/3/comments")
@@ -207,6 +207,65 @@ describe("NC News App", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
         expect(msg).toBe("Not Found - Article id does not exist OR No comments for a valid article id");
+        });
+    });
+  });
+
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("Status: 201 replies with newly created article comment", () => {
+      const comment = {
+        username: "butter_bridge", 
+        body: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
+      };
+      return request(app)
+      .post("/api/articles/3/comments")
+      .send(comment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(expect.objectContaining({
+          comment_id: expect.any(Number),
+          body: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference", 
+          author: "butter_bridge", 
+          article_id: expect.any(Number), 
+          votes: expect.any(Number),
+          created_at: expect.any(String)   
+        }));
+      });
+    });
+    test("Status: 400 for route BAD REQUEST - Empty post input", () => {
+      const comment = {};
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Invalid key on username and body", () => {
+      const comment = { 
+        usernamerz: "butter_bridge", 
+        bodyz: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Null values on username and body", () => {
+      const comment = { 
+        usernamerz: null, 
+        bodyz: null
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
         });
     });
   });

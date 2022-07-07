@@ -56,3 +56,13 @@ exports.modifyArticleById = (article_id, inc_votes) => {
         return updatedArticleData;
     });
 };
+
+exports.createComment = (article_id, username, body) => {
+    return db.query("INSERT INTO comments (body, votes, author, article_id, created_at) VALUES ($1, 0, $2, $3, '2022-07-06 15:55:14') RETURNING *;", [body, username, article_id]).then((comment) => {
+        const newComment = comment.rows;
+        if (!newComment) {
+            return Promise.reject({ status: 404, msg: "Not Foundx"});
+        } 
+        return newComment[0];
+    });
+};
