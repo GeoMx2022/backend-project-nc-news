@@ -175,7 +175,7 @@ describe("NC News App", () => {
     });
   });
 
-  describe.only("GET /api/articles/:article_id/comments", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
     test("Status: 200 and replies with an array of comments objects", () => {
       return request(app)
         .get("/api/articles/3/comments")
@@ -209,5 +209,29 @@ describe("NC News App", () => {
         expect(msg).toBe("Not Found - Article id does not exist OR No comments for a valid article id");
         });
     });
+  });
+
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("Status: 204", () => {
+      return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+    });
+  });
+  test("Status: 404 for possibly valid comment id but NOT FOUND in this database", () => {
+    return request(app)
+      .delete("/api/comments/999999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+      expect(msg).toBe("Not Found - Comment id does not exist");
+      });
+  });
+  test("Status: 400 for route BAD REQUEST - Not a valid comment id", () => {
+    return request(app)
+      .delete("/api/comments/notAnIdNo")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+      expect(msg).toBe("Bad Request - Invalid Input");
+      });
   });
 });
