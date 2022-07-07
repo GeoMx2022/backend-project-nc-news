@@ -105,7 +105,7 @@ describe("NC News App", () => {
         .get("/api/articles/99999999")
         .expect(404)
         .then(({ body: { msg } }) => {
-        expect(msg).toBe("Article id does not exist");
+        expect(msg).toBe("Not Found");
         });
     });
     test("Status: 400 for route BAD REQUEST - Not a valid article id", () => {
@@ -193,12 +193,12 @@ describe("NC News App", () => {
           });
       });
     });
-    test("Status: 404 for valid article id but comment NOT FOUND in this database", () => {
+    test("Status: 200 for valid article id but comment NOT FOUND in this database", () => {
       return request(app)
         .get("/api/articles/7/comments")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found - Article id does not exist OR No comments for a valid article id");
+        .expect(200)
+        .then(({ body }) => {
+        expect(body.comments).toEqual([]);
         });
     });
     test("Status: 404 for possibly valid article id but NOT FOUND in this database", () => {
@@ -206,7 +206,7 @@ describe("NC News App", () => {
         .get("/api/articles/99999/comments")
         .expect(404)
         .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found - Article id does not exist OR No comments for a valid article id");
+        expect(msg).toBe("Not Found");
         });
     });
   });
@@ -226,8 +226,8 @@ describe("NC News App", () => {
           comment_id: expect.any(Number),
           body: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference", 
           author: "butter_bridge", 
-          article_id: expect.any(Number), 
-          votes: expect.any(Number),
+          article_id: 3, 
+          votes: 0,
           created_at: expect.any(String)   
         }));
       });
@@ -255,6 +255,19 @@ describe("NC News App", () => {
         expect(msg).toBe("Bad Request - Invalid Input");
         });
     });
+    test("Status: 400 for route BAD REQUEST - Username is a valid string but does not exist in the database", () => {
+      const comment = { 
+        username: "philosphical-troll", 
+        body: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
     test("Status: 400 for route BAD REQUEST - Null values on username and body", () => {
       const comment = { 
         usernamerz: null, 
@@ -262,6 +275,32 @@ describe("NC News App", () => {
       };
       return request(app)
         .post("/api/articles/3/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for attempting to post a comment with an invalid article_id", () => {
+      const comment = { 
+        username: "butter_bridge", 
+        body: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
+      };
+      return request(app)
+        .post("/api/articles/99999/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Not a valid article id", () => {
+      const comment = { 
+        username: "butter_bridge", 
+        body: "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
+      };
+      return request(app)
+        .post("/api/articles/notAnIdNo/comments")
         .send(comment)
         .expect(400)
         .then(({ body: { msg } }) => {
