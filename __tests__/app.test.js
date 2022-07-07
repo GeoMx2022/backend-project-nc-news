@@ -59,14 +59,13 @@ describe("NC News App", () => {
     });
   });   
 
-  describe.only("GET /api/articles", () => {
+  describe("GET /api/articles", () => {
     test("Status: 200 and replies with an array of article objects", () => {
       return request(app) 
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).toHaveLength(12);
-          expect(body.articles).toBeSortedBy("created_at", {descending: true});
           body.articles.forEach((article) => {
           expect(article).toEqual(expect.objectContaining({
             article_id: expect.any(Number),
@@ -80,7 +79,7 @@ describe("NC News App", () => {
           });
       });
     });
-    test("Status: 200 and replies with default sort order of date: descending", () => {
+    test("Status: 200 and replies with default sort order of created_at: descending", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -93,7 +92,7 @@ describe("NC News App", () => {
         .get("/api/articles?sort_by=comment_count&&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles).toBeSortedBy("comment_count", { coerce: true, descending: false });
+          expect(body.articles).toBeSortedBy("comment_count", { descending: false });
         });
     });
     test("Status: 200 and replies with sort order of article_id: ascending", () => {
@@ -102,6 +101,46 @@ describe("NC News App", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).toBeSortedBy("author", { descending: false });
+        });
+    });
+    test("Status: 200 and replies with sort order of votes: descending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes&&order=desc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("votes", { descending: true });
+        });
+    });
+    test("Status: 200 and replies with articles filtered by a specific topic", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].topic).toEqual("cats");
+        });
+    });
+    test("Status: 400 - BAD REQUEST for invalid sort_by query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=commentz_countz")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid sort_by query");
+        });
+    });
+    test("Status: 400 - BAD REQUEST for invalid order query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=comment_count&&order=ascending")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid order query");
+        });
+    });
+    test("Status: 400 - BAD REQUEST for invalid topic filter", () => {
+      return request(app)
+        .get("/api/articles?topic=dogs")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Topic does not exist");
         });
     });
   }); 
