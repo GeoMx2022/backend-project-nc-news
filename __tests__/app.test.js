@@ -119,6 +119,14 @@ describe("NC News App", () => {
           expect(body.articles[0].topic).toEqual("cats");
         });
     });
+    test("Status: 200 and replies with an empty array when there are no articles for the specified valid topic", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([]);
+        });
+    });
     test("Status: 400 - BAD REQUEST for invalid sort_by query", () => {
       return request(app)
         .get("/api/articles?sort_by=commentz_countz")
