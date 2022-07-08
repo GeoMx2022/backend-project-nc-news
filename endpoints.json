@@ -1,6 +1,6 @@
 {
   "GET /api": {
-    "description": "responds with up a json object of all the available endpoints of the api"
+    "description": "responds with a json object of all the available endpoints of the api"
   },
   "GET /api/topics": {
     "description": "responds an array of all topics",

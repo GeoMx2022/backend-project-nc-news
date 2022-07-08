@@ -2,7 +2,7 @@ const db = require("../db/connection");
 const fs = require("fs/promises");
 
 exports.fetchApi = async () => {
-    const apiData = await fs.readFile(`${__dirname}/api/endpoints.json`, "utf-8")
+    const apiData = await fs.readFile(`/home/geomx22/Documents/Northcoders/Backend/be-project/be-nc-news/endpoints.json`, "utf-8");
         console.log(apiData)
         return apiData;
 };

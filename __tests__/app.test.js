@@ -23,7 +23,7 @@ describe("NC News App", () => {
         });
     });
   });
-/*
+
   describe("GET /api", () => {
     test("Status: 200 and replies with an object listing all the available endpoints in the app", () => {
       return request(app)
@@ -31,32 +31,12 @@ describe("NC News App", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual(expect.objectContaining({
-          "GET /api": {
-            "description": "responds with up a json object of all the available endpoints of the api"
-          },
-          "GET /api/topics": {
-            "description": "responds an array of all topics",
-            "exampleResponse": {
-              "topics": [{ "slug": "football", "description": "Footie!" }]
-            }
-          },
-          "GET /api/users": {
-            "description": "responds an array of all users",
-            "exampleResponse": {
-              "users": [
-                {
-                "username": "butter_bridge",
-                "name": "jonny",
-                "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-                }
-              ]
-            }
-          },
+          "apiData": expect.any(String)
         }));
       });
     });
   });
-*/
+
   describe("GET /api/topics", () => {
     test("Status: 200 and replies with a JSON object of topics", () => {
       return request(app) 
