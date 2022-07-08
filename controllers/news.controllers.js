@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticleById, modifyArticleById, fetchUsers, fetchArticles, fetchCommentsByArticleId, createComment } = require("../models/news.models");
+const { fetchTopics, fetchArticleById, modifyArticleById, fetchUsers, fetchArticles, fetchCommentsByArticleId, createComment, removeComment } = require("../models/news.models");
 
 exports.getTopics = (req, res, next) => {
     fetchTopics()
@@ -79,3 +79,13 @@ exports.postComment = (req, res, next) => {
     });
 };
 
+exports.deleteComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    removeComment(comment_id)
+    .then(() => {
+      res.status(204).send();
+     })
+     .catch((err) => {
+        next(err);
+    });
+};

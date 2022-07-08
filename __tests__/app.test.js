@@ -379,4 +379,28 @@ describe("NC News App", () => {
         });
     });
   });
+
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("Status: 204", () => {
+      return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+    });
+  });
+  test("Status: 404 for possibly valid comment id but NOT FOUND in this database", () => {
+    return request(app)
+      .delete("/api/comments/999999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+      expect(msg).toBe("Not Found");
+      });
+  });
+  test("Status: 400 for route BAD REQUEST - Not a valid comment id", () => {
+    return request(app)
+      .delete("/api/comments/notAnIdNo")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+      expect(msg).toBe("Bad Request - Invalid Input");
+      });
+  });
 });
