@@ -1,4 +1,14 @@
-const { fetchTopics, fetchArticleById, modifyArticleById, fetchUsers, fetchArticles, fetchCommentsByArticleId, createComment } = require("../models/news.models");
+const { fetchApi, fetchTopics, fetchArticleById, modifyArticleById, fetchUsers, fetchArticles, fetchCommentsByArticleId, createComment } = require("../models/news.models");
+
+exports.getApi = (req, res, next) => {
+    fetchApi()
+    .then((apiData) => {
+        res.status(200).send({ apiData });
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
 
 exports.getTopics = (req, res, next) => {
     fetchTopics()

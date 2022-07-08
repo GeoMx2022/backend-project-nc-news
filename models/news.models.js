@@ -1,4 +1,11 @@
 const db = require("../db/connection");
+const fs = require("fs/promises");
+
+exports.fetchApi = async () => {
+    const apiData = await fs.readFile(`${__dirname}/api/endpoints.json`, "utf-8")
+        console.log(apiData)
+        return apiData;
+};
 
 exports.fetchTopics = () => {
     return db.query("SELECT * FROM topics;").then((topics) => {
