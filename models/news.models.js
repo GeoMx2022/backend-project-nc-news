@@ -21,55 +21,90 @@ exports.fetchUsers = () => {
     });
 };
 
-exports.fetchArticles = () => {
-    return db.query("SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;").then((articles) => {
-        const articlesData = articles.rows;
-        return articlesData;
-    });
+exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
+    const validSortOptions = ["article_id", "title", "topic", "author", "created_at", "votes", "comment_count"];
+    const validOrderOptions = ["asc", "desc"];
+    const validTopicOptions = ["mitch", "cats", "paper", "coding", "football", "cooking"];
+
+    if (!validSortOptions.includes(sort_by)) {
+        return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
+      } else if (!validSortOptions.includes(sort_by) && !validOrderOptions.includes(order)) {
+        return Promise.reject({ status: 400, msg: "Invalid sort_by or order query" });
+      } else if (!validOrderOptions.includes(order)) {
+        return Promise.reject({ status: 400, msg: "Invalid order query" });
+      }; 
+
+    if (!topic) {
+        return db.query(`SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`).then((articles) => {
+            const articlesData = articles.rows;
+            return articlesData;
+        });    
+    } else {
+        if (!validTopicOptions.includes(topic)) {
+            return Promise.reject({ status: 400, msg: "Topic does not exist" });
+        } else {
+            return db.query(`SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE topic = '${topic}' GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`).then((articles) => {
+                const articlesData = articles.rows;
+                return articlesData;
+            });  
+        };
+    };  
 };
 
 exports.fetchArticleById = (article_id) => {
     return db.query("SELECT articles.*, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles INNER JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;", [article_id]).then((article) => {
         const articleData = article.rows
-        if (!articleData) {
-            return Promise.reject({ status: 404, msg: "Not Found"});
-        } else if (articleData.length === 0) {
-            return Promise.reject({ status: 404, msg: "Article id does not exist"})
+        if (articleData.length === 0 || articleData === 'undefined') {
+            return Promise.reject({ status: 404, msg: "Not Found"})
         } else {
             return articleData[0];
         }
     });
 };
 
-exports.fetchCommentsByArticleId = (article_id) => {
-    return db.query("SELECT comments.comment_id, comments.body, comments.votes, comments.author, comments.created_at FROM comments WHERE comments.article_id = $1;", [article_id]).then((comments) => {
-        const commentData = comments.rows
-        if (!commentData) {
+exports.fetchCommentsByArticleId = async (article_id) => {
+        const comments = await db.query("SELECT comments.comment_id, comments.body, comments.votes, comments.author, comments.created_at FROM comments WHERE comments.article_id = $1;", [article_id]);
+    
+        const article = await db.query("SELECT * FROM articles WHERE articles.article_id = $1;", [article_id])
+
+        if (article.rows.length > 0 && comments.rows.length === 0) {
+            return [];
+        } else if (article.rows.length === 0 || comments.rows === 'undefined') {
             return Promise.reject({ status: 404, msg: "Not Found"});
-        } else if (commentData.length === 0) {
-            return Promise.reject({ status: 404, msg: "Not Found - Article id does not exist OR No comments for a valid article id"})
         } else {
-            return commentData;
+            return comments.rows
         }
-    });
 };
 
 exports.modifyArticleById = (article_id, inc_votes) => {
     return db.query("UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;", [inc_votes, article_id]).then((article) => {
-        const updatedArticleData = article.rows[0];
-        if (!updatedArticleData) {
+        const updatedArticleData = article.rows;
+        if (updatedArticleData.length === 0 || updatedArticleData === 'undefined') {
             return Promise.reject({ status: 404, msg: "Not Found"});
         }
-        return updatedArticleData;
+        return updatedArticleData[0];
     });
 };
 
 exports.createComment = (article_id, username, body) => {
-    return db.query("INSERT INTO comments (body, votes, author, article_id, created_at) VALUES ($1, 0, $2, $3, '2022-07-06 15:55:14') RETURNING *;", [body, username, article_id]).then((comment) => {
-        const newComment = comment.rows;
-        if (!newComment) {
-            return Promise.reject({ status: 404, msg: "Not Foundx"});
-        } 
+    return db.query("INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;", [body, username, article_id]).then((comment) => {
+        const newComment = comment.rows; 
+        if (newComment.length === 0 || newComment === 'undefined') {
+            return Promise.reject({ status: 404, msg: "Not Found"});
+        }
+        console.log(newComment) 
         return newComment[0];
     });
 };
+
+exports.removeComment = (comment_id) => {
+    return db.query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [comment_id]).then((deletedComment) => {
+        const removedComment = deletedComment.rows;
+        if (removedComment.length === 0 || removedComment.length === 'undefined') {
+            return Promise.reject({ status: 404, msg: "Not Found"})
+        } else {
+            return removedComment[0];
+        }
+    });
+};
+

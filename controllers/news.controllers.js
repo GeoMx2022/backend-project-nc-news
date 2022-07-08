@@ -1,4 +1,4 @@
-const { fetchApi, fetchTopics, fetchArticleById, modifyArticleById, fetchUsers, fetchArticles, fetchCommentsByArticleId, createComment } = require("../models/news.models");
+const { fetchApi, fetchTopics, fetchArticleById, modifyArticleById, fetchUsers, fetchArticles, fetchCommentsByArticleId, createComment, removeComment } = require("../models/news.models");
 
 exports.getApi = (req, res, next) => {
     fetchApi()
@@ -31,7 +31,10 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-    fetchArticles()
+    const { sort_by } = req.query;
+    const { order } = req.query;
+    const { topic } = req.query;
+    fetchArticles(sort_by, order, topic)
     .then((articles) => {
         res.status(200).send({ articles })
     })
@@ -86,3 +89,13 @@ exports.postComment = (req, res, next) => {
     });
 };
 
+exports.deleteComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    removeComment(comment_id)
+    .then(() => {
+      res.status(204).send();
+     })
+     .catch((err) => {
+        next(err);
+    });
+};

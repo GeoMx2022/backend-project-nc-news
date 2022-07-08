@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { getApi, getTopics, getArticleById, updateArticleById, getUsers, getArticles, getCommentsByArticleId, postComment } = require("./controllers/news.controllers");
+const { getApi, getTopics, getArticleById, updateArticleById, getUsers, getArticles, getCommentsByArticleId, postComment, deleteComment } = require("./controllers/news.controllers");
 const { handleInvalidPaths, handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./app.errors") 
 
 // SERVER MIDDLEWARE
@@ -13,6 +13,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.patch("/api/articles/:article_id", updateArticleById);
 app.post("/api/articles/:article_id/comments", postComment);
+app.delete("/api/comments/:comment_id", deleteComment);
 
 // ERROR HANDLING MIDDLEWARE
 app.use("*", handleInvalidPaths);
