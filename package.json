@@ -10,7 +10,7 @@
     "prepare": "husky install",
     "view-test-db": "psql -f ./test.sql > test.txt",
     "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get DATABASE_URL) npm run seed",
-    "start": "node listen.js"
+    "start": "node ./db/listen.js"
   },
   "repository": {
     "type": "git",
