@@ -223,7 +223,7 @@ describe("NC News App", () => {
       .delete("/api/comments/999999")
       .expect(404)
       .then(({ body: { msg } }) => {
-      expect(msg).toBe("Not Found - Comment id does not exist");
+      expect(msg).toBe("Not Found");
       });
   });
   test("Status: 400 for route BAD REQUEST - Not a valid comment id", () => {
