@@ -91,7 +91,6 @@ exports.createComment = (article_id, username, body) => {
         if (newComment.length === 0 || newComment === 'undefined') {
             return Promise.reject({ status: 404, msg: "Not Found"});
         }
-        console.log(newComment) 
         return newComment[0];
     });
 };
