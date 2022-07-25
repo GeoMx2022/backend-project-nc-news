@@ -1,9 +1,11 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const { getApi, getTopics, getArticleById, updateArticleById, getUsers, getArticles, getCommentsByArticleId, postComment, deleteComment } = require("./controllers/news.controllers");
 const { handleInvalidPaths, handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./app.errors") 
 
 // SERVER MIDDLEWARE
+app.use(cors());
 app.use(express.json());
 app.get("/api", getApi);
 app.get("/api/topics", getTopics);
