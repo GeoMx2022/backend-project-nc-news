@@ -3,8 +3,9 @@ const fs = require("fs/promises");
 const {checkExists} = require("../db/helpers/utils");
 
 exports.fetchApi = async () => {
-    const apiData = await fs.readFile(`/home/geomx22/Documents/Northcoders/Backend/be-project/be-nc-news/endpoints.json`, "utf-8");
-        return apiData;
+    const apiData = await fs.readFile(`${__dirname}/../endpoints.json`, "utf-8");
+    const parsedApiData = JSON.parse(apiData)
+    return parsedApiData;
 };
 
 exports.fetchTopics = () => {
