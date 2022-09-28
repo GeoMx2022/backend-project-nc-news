@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 const fs = require("fs/promises");
+const {checkExists} = require("../db/helpers/utils");
 
 exports.fetchApi = async () => {
     const apiData = await fs.readFile(`/home/geomx22/Documents/Northcoders/Backend/be-project/be-nc-news/endpoints.json`, "utf-8");
@@ -52,56 +53,52 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
 
 exports.fetchArticleById = (article_id) => {
     return db.query("SELECT articles.*, CAST(COUNT(comments.article_id) AS INT) AS comment_count FROM articles INNER JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;", [article_id]).then((article) => {
-        const articleData = article.rows
-        if (articleData.length === 0 || articleData === 'undefined') {
+        const articleData = article.rows[0]
+        if (!articleData) {
             return Promise.reject({ status: 404, msg: "Not Found"})
         } else {
-            return articleData[0];
+            return articleData;
         }
+    });
+};
+
+exports.modifyArticleById = (article_id, inc_votes) => {
+    return db.query("UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;", [inc_votes, article_id]).then((article) => {
+        const updatedArticleData = article.rows[0];
+        if (!updatedArticleData) {
+            return Promise.reject({ status: 404, msg: "Not Found"});
+        }
+        return updatedArticleData;
     });
 };
 
 exports.fetchCommentsByArticleId = async (article_id) => {
         const comments = await db.query("SELECT comments.comment_id, comments.body, comments.votes, comments.author, comments.created_at FROM comments WHERE comments.article_id = $1;", [article_id]);
-    
-        const article = await db.query("SELECT * FROM articles WHERE articles.article_id = $1;", [article_id])
-
-        if (article.rows.length > 0 && comments.rows.length === 0) {
-            return [];
-        } else if (article.rows.length === 0 || comments.rows === 'undefined') {
-            return Promise.reject({ status: 404, msg: "Not Found"});
+        if (comments.rows.length === 0) {
+            await checkExists('articles', 'article_id', article_id)
+            return [];       
         } else {
             return comments.rows
         }
 };
 
-exports.modifyArticleById = (article_id, inc_votes) => {
-    return db.query("UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;", [inc_votes, article_id]).then((article) => {
-        const updatedArticleData = article.rows;
-        if (updatedArticleData.length === 0 || updatedArticleData === 'undefined') {
-            return Promise.reject({ status: 404, msg: "Not Found"});
-        }
-        return updatedArticleData[0];
-    });
-};
-
 exports.createComment = (article_id, username, body) => {
     return db.query("INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;", [body, username, article_id]).then((comment) => {
-        const newComment = comment.rows; 
-        if (newComment.length === 0 || newComment === 'undefined') {
+        const newComment = comment.rows[0]; 
+        if (!newComment) {
             return Promise.reject({ status: 404, msg: "Not Found"});
         }
-        return newComment[0];
+        return newComment;
     });
 };
 
 exports.removeComment = (comment_id) => {
     return db.query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [comment_id]).then((deletedComment) => {
-        const removedComment = deletedComment.rows;
-        if (removedComment.length === 0 || removedComment.length === 'undefined') {
+        const removedComment = deletedComment.rows[0];
+        if (!removedComment) {
             return Promise.reject({ status: 404, msg: "Not Found"})
         } else {
-            return removedComment[0];
+            return removedComment;
         }
     });
 };

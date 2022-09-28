@@ -54,23 +54,23 @@ exports.getArticleById = (req, res, next) => {
     });
 };
 
-exports.getCommentsByArticleId = (req, res, next) => {
-    const { article_id } = req.params;  
-    fetchCommentsByArticleId(article_id)
-    .then((comments) => {
-        res.status(200).send({ comments });
-    })
-    .catch((err) => {
-        next(err);
-    });
-};
-
 exports.updateArticleById = (req, res, next) => {
     const { article_id } = req.params; 
     const { inc_votes } = req.body; 
     modifyArticleById(article_id, inc_votes)
     .then((article) => {
         res.status(200).send({ article });
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+    const { article_id } = req.params;  
+    fetchCommentsByArticleId(article_id)
+    .then((comments) => {
+        res.status(200).send({ comments });
     })
     .catch((err) => {
         next(err);

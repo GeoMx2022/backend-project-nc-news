@@ -34,13 +34,13 @@ SetUp & Installation Instructions
 2. Copy the HTTPS link to your GitHub. 
 3. Go to your terminal and clone the respository from GitHub to your local machine in the appropriate folder (git clone <<your-github-HTTPSlink>>)
 4. Open the repository in your code editor.
-5. Install the following dependecies using ther terminal:
-    Express: npm i express
-    Jest: npm i -D jest
-    Jest-Sorted: npm i -D jest-sorted
-    Supertest: npm i -D supertest
-    Pg-Format: npm i -D pg-format
-    Dotenv: npm i -D dotenv 
+5. Install the following dependecies using the terminal with npm i:
+    Express
+    Jest
+    Jest-Sorted
+    Supertest
+    Pg-Format
+    Dotenv
 5. Create the following documents for environment variables in the repository:
     .env.test
     .env.development

@@ -42,7 +42,6 @@
   "GET /api/articles/:article_id": {
     "description": "replies with an article object",
     "table_columns": ["article_id", "author", "title", "body", "created_at", "votes", "topic"],
-    "query_options": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
