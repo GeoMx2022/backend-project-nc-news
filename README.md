@@ -1,26 +1,26 @@
-#H1 NC News Server SetUp  
+# NC News Server SetUp  
 
-#H4 Project Summary  
+#### Project Summary  
 NC News is an social media app that currently allows users to do the following:
 * GET
-    1. /api/topics
-    2. /api/users
-    3. /api/articles
-    4. /api/articles/:article_id
-    5. /api/articles/:article_id/comments
+    * /api/topics
+    * /api/users
+    * /api/articles
+    * /api/articles/:article_id
+    * /api/articles/:article_id/comments
 * PATCH /api/articles/:article_id
 * POST /api/articles/:article_id/comments
 * DELETE /api/comments/:comment_id
 
 An in-depth outline query options and functionality for each endpoint is available at GET /api.  
 
-#H4 Hosted App
+#### Hosted App  
 A hosted version of the app on Heroku can be found here: [NC News](https://nc-news-application.herokuapp.com/api)  
 
-#H4 Repository
+####  Repository  
 This repository contains all the backend code required for the NC News App.    
 
-#H4 SetUp & Installation Instructions
+####  SetUp & Installation Instructions
 1. Fork this repo to your own GitHub an the GitHub website.
 2. Copy the HTTPS link to your GitHub. 
 3. Go to your terminal and clone the respository from GitHub to your local machine in the appropriate folder (git clone <<your-github-HTTPSlink>>)
@@ -46,6 +46,6 @@ This repository contains all the backend code required for the NC News App.
 
 That's it. You are done.  
 
-#H4 Recommended Application Specifications
+####  Recommended Application Specifications  
 **NodeJs**: v18
 **Postgres**: v14.4
