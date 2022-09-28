@@ -25,7 +25,7 @@ describe("NC News App", () => {
   });
 
   describe("GET /api", () => {
-    test.only("Status: 200 and replies with an object listing all the available endpoints in the app", () => {
+    test("Status: 200 and replies with an object listing all the available endpoints in the app", () => {
       return request(app)
         .get("/api")
         .expect(200)

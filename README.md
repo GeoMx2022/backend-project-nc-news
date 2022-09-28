@@ -47,5 +47,5 @@ This repository contains all the backend code required for the NC News App.
 That's it. You are done.  
 
 ####  Recommended Application Specifications  
-**NodeJs**: v18
+**NodeJs**: v18  
 **Postgres**: v14.4
