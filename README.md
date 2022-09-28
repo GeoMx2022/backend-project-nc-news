@@ -15,7 +15,7 @@ NC News is an social media app that currently allows users to do the following:
 An in-depth outline query options and functionality for each endpoint is available at GET /api.  
 
 #H4 Hosted App
-A hosted version of the app on Heroku can be found here: https://nc-news-application.herokuapp.com/api  
+A hosted version of the app on Heroku can be found here: [NC News](https://nc-news-application.herokuapp.com/api)  
 
 #H4 Repository
 This repository contains all the backend code required for the NC News App.    
