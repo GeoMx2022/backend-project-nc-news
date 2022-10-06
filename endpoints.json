@@ -13,16 +13,25 @@
     "exampleResponse": {
       "users": [
         {
-        "username": "butter_bridge",
-        "name": "jonny",
-        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         }
       ]
     }
   },
   "GET /api/articles": {
     "description": "replies with an array of article objects. Comment_count is the total count of all comments with this article_id. Default sorting is created_by descending",
-    "table_columns": ["article_id", "author", "title", "body", "created_at", "votes", "topic", "comment_count"],
+    "table_columns": [
+      "article_id",
+      "author",
+      "title",
+      "body",
+      "created_at",
+      "votes",
+      "topic",
+      "comment_count"
+    ],
     "query_options": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -32,16 +41,57 @@
           "title": "Seafood substitutions are increasing",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341, 
+          "created_at": 1527695953341,
           "votes": 100,
           "comment_count": 12
         }
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "accepts an object with author, title, body and topic properties. Responds with full posted article",
+    "table_columns": [
+      "article_id",
+      "author",
+      "title",
+      "body",
+      "topic",
+      "votes",
+      "comment_count",
+      "created_at"
+    ],
+    "exampleInput": {
+      "username": "butter_bridge",
+      "title": "random new article",
+      "body": "I don't know what to write here so let's just see what happens when I upload this",
+      "topic": "mitch"
+    },
+    "exampleResponse": {
+      "comment": [
+        {
+          "article_id": 13,
+          "author": "butter_bridge",
+          "title": "random new article",
+          "body": "I don't know what to write here so let's just see what happens when I upload this",
+          "topic": "mitch",
+          "votes": 0,
+          "comment_count": 0,
+          "created_at": 1594329060000
+        }
+      ]
+    }
+  },
   "GET /api/articles/:article_id": {
     "description": "replies with an article object",
-    "table_columns": ["article_id", "author", "title", "body", "created_at", "votes", "topic"],
+    "table_columns": [
+      "article_id",
+      "author",
+      "title",
+      "body",
+      "created_at",
+      "votes",
+      "topic"
+    ],
     "exampleResponse": {
       "articles": [
         {
@@ -50,12 +100,12 @@
           "title": "Seafood substitutions are increasing",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341, 
+          "created_at": 1527695953341,
           "votes": 100,
           "comment_count": 12
         },
         {
-          "article_id": 1,  
+          "article_id": 1,
           "title": "Living in the shadow of a great man",
           "topic": "mitch",
           "author": "butter_bridge",
@@ -69,9 +119,18 @@
   },
   "PATCH /api/articles/article_id": {
     "description": "increments or decrements an article's vote property by the amount input into an inc_votes object. Responds with the full updated article",
-    "table_columns": ["article_id", "author", "title", "body", "created_at", "votes", "topic", "comment_count"],
-    "exampleInput1": {"inc_votes": 5},
-    "exampleInput2": {"inc_votes": -5},
+    "table_columns": [
+      "article_id",
+      "author",
+      "title",
+      "body",
+      "created_at",
+      "votes",
+      "topic",
+      "comment_count"
+    ],
+    "exampleInput1": { "inc_votes": 5 },
+    "exampleInput2": { "inc_votes": -5 },
     "exampleResponse1": {
       "articles": [
         {
@@ -80,7 +139,7 @@
           "title": "Seafood substitutions are increasing",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341, 
+          "created_at": 1527695953341,
           "votes": 105,
           "comment_count": 12
         }
@@ -94,7 +153,7 @@
           "title": "Seafood substitutions are increasing",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341, 
+          "created_at": 1527695953341,
           "votes": 95,
           "comment_count": 12
         }
@@ -127,16 +186,16 @@
     "description": "accepts an object with username and body properties. Responds with full posted comment",
     "table_columns": ["comment_id", "author", "body", "votes", "created_at"],
     "exampleInput": {
-      "username": "butter_bridge", 
+      "username": "butter_bridge",
       "body": "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
     },
     "exampleResponse": {
       "comment": [
         {
           "comment_id": 1,
-          "body": "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference", 
-          "author": "butter_bridge", 
-          "created_at": "2020-07-09T20:11:00.000Z", 
+          "body": "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference",
+          "author": "butter_bridge",
+          "created_at": "2020-07-09T20:11:00.000Z",
           "votes": 0,
           "comment_count": 0
         }
