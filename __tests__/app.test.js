@@ -251,7 +251,7 @@ describe("NC News App", () => {
         .get("/api/articles?sort_by=commentz_countz")
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Invalid sort_by query");
+          expect(msg).toBe("Invalid query");
         });
     });
     test("Status: 400 - BAD REQUEST for invalid order query", () => {
@@ -259,7 +259,7 @@ describe("NC News App", () => {
         .get("/api/articles?sort_by=comment_count&&order=ascending")
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Invalid order query");
+          expect(msg).toBe("Invalid query");
         });
     });
     test("Status: 400 - BAD REQUEST for invalid topic filter", () => {
@@ -268,6 +268,105 @@ describe("NC News App", () => {
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Topic does not exist");
+        });
+    });
+  });
+
+  describe("POST /api/articles", () => {
+    test("Status: 201 replies with newly created article", () => {
+      const article = {
+        username: "butter_bridge",
+        title: "random new article",
+        body: "I don't know what to write here so let's just see what happens when I upload this",
+        topic: "mitch",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(article)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              author: "butter_bridge",
+              title: "random new article",
+              body: "I don't know what to write here so let's just see what happens when I upload this",
+              topic: "mitch",
+              votes: 0,
+              comment_count: 0,
+              created_at: expect.any(Number),
+            })
+          );
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Empty post input", () => {
+      const article = {};
+      return request(app)
+        .post("/api/articles")
+        .send(article)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Invalid keys", () => {
+      const article = {
+        usernamez: "butter_bridge",
+        title: "random new article",
+        bodi: "I don't know what to write here so let's just see what happens when I upload this",
+        topicz: "mitch",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(article)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Null values", () => {
+      const article = {
+        username: "butter_bridge",
+        title: null,
+        body: null,
+        topic: null,
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(article)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Username is a valid string but does not exist in the database", () => {
+      const article = {
+        username: "philosphical-troll",
+        title: "random new article",
+        body: "I don't know what to write here so let's just see what happens when I upload this",
+        topic: "mitch",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(article)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid username");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Topic is a valid string but does not exist in the database", () => {
+      const article = {
+        username: "butter_bridge",
+        title: "real estate 101",
+        body: "I'm going to tell you all I know about real estate'",
+        topic: "houses",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(article)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid topic");
         });
     });
   });
@@ -509,8 +608,8 @@ describe("NC News App", () => {
     });
     test("Status: 400 for route BAD REQUEST - Null values on username and body", () => {
       const comment = {
-        usernamerz: null,
-        bodyz: null,
+        username: null,
+        body: null,
       };
       return request(app)
         .post("/api/articles/3/comments")
@@ -553,20 +652,20 @@ describe("NC News App", () => {
       return request(app).delete("/api/comments/1").expect(204);
     });
     test("Status: 404 for possibly valid comment id but NOT FOUND in this database", () => {
-    return request(app)
-      .delete("/api/comments/999999")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found");
-      });
+      return request(app)
+        .delete("/api/comments/999999")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
+        });
     });
     test("Status: 400 for route BAD REQUEST - Not a valid comment id", () => {
-    return request(app)
-      .delete("/api/comments/notAnIdNo")
-      .expect(400)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad Request - Invalid Input");
-      });
-    });  
+      return request(app)
+        .delete("/api/comments/notAnIdNo")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
   });
 });
