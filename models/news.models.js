@@ -22,6 +22,17 @@ exports.fetchUsers = () => {
   });
 };
 
+exports.fetchUserByUsername = (username) => {
+  return db.query("SELECT users.* FROM users WHERE users.username = $1;", [username]).then((user) => {
+    const userData = user.rows[0];
+      if (!userData) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      } else {
+        return userData;
+      }
+    });
+};
+
 exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   const validSortOptions = [
     "article_id",

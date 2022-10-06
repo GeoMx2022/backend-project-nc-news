@@ -78,6 +78,29 @@ describe("NC News App", () => {
     });
   });
 
+  describe("GET /api/users/:username", () => {
+    test("Status: 200 and replies with an article JSON object", () => {
+      return request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.user).toEqual({
+            username: "butter_bridge",
+            avatar_url: "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            name: "jonny",
+          });
+        });
+    });
+    test("Status: 404 for possibly valid username but NOT FOUND in this database", () => {
+      return request(app)
+        .get("/api/users/philosphical_troll")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
+        });
+    });
+  });
+
   describe("GET /api/articles", () => {
     test("Status: 200 and replies with an array of article objects", () => {
       return request(app)

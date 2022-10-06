@@ -9,29 +9,46 @@
     }
   },
   "GET /api/users": {
-    "description": "responds an array of all users",
+    "description": "responds an array of all users objects",
     "exampleResponse": {
       "users": [
         {
           "username": "butter_bridge",
           "name": "jonny",
           "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        },
+        {
+          "username": "rogersop",
+          "name": "paul",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+        },
+        {
+          "username": "lurker",
+          "name": "do_nothing",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "replies with an user object",
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          "name": "jonny"
         }
       ]
     }
   },
   "GET /api/articles": {
     "description": "replies with an array of article objects. Comment_count is the total count of all comments with this article_id. Default sorting is created_by descending",
-    "table_columns": [
-      "article_id",
-      "author",
-      "title",
-      "body",
-      "created_at",
-      "votes",
-      "topic",
-      "comment_count"
-    ],
     "query_options": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -50,16 +67,6 @@
   },
   "POST /api/articles": {
     "description": "accepts an object with author, title, body and topic properties. Responds with full posted article",
-    "table_columns": [
-      "article_id",
-      "author",
-      "title",
-      "body",
-      "topic",
-      "votes",
-      "comment_count",
-      "created_at"
-    ],
     "exampleInput": {
       "username": "butter_bridge",
       "title": "random new article",
@@ -83,15 +90,6 @@
   },
   "GET /api/articles/:article_id": {
     "description": "replies with an article object",
-    "table_columns": [
-      "article_id",
-      "author",
-      "title",
-      "body",
-      "created_at",
-      "votes",
-      "topic"
-    ],
     "exampleResponse": {
       "articles": [
         {
@@ -119,16 +117,6 @@
   },
   "PATCH /api/articles/article_id": {
     "description": "increments or decrements an article's vote property by the amount input into an inc_votes object. Responds with the full updated article",
-    "table_columns": [
-      "article_id",
-      "author",
-      "title",
-      "body",
-      "created_at",
-      "votes",
-      "topic",
-      "comment_count"
-    ],
     "exampleInput1": { "inc_votes": 5 },
     "exampleInput2": { "inc_votes": -5 },
     "exampleResponse1": {
@@ -162,21 +150,20 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "replies with an array of comments objects for the specified article_id",
-    "table_columns": ["comment_id", "author", "body", "votes", "created_at"],
     "exampleResponse": {
       "comments": [
         {
+          "comment_id": 1,
           "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
           "votes": 16,
           "author": "butter_bridge",
-          "article_id": 9,
           "created_at": 1586179020000
         },
         {
+          "comment_id": 2,
           "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
           "votes": 14,
           "author": "butter_bridge",
-          "article_id": 1,
           "created_at": 1604113380000
         }
       ]
@@ -184,7 +171,6 @@
   },
   "POST /api/articles/article_id/comments": {
     "description": "accepts an object with username and body properties. Responds with full posted comment",
-    "table_columns": ["comment_id", "author", "body", "votes", "created_at"],
     "exampleInput": {
       "username": "butter_bridge",
       "body": "Let me accept the things I can't change, the courage to change those I can and the wisdom to know the difference"
