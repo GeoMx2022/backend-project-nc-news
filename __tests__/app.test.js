@@ -670,6 +670,105 @@ describe("NC News App", () => {
     });
   });
 
+  describe("PATCH /api/comments/:comment_id", () => {
+    test("Status: 200 and replies with an updated comment JSON object - Votes decrement", () => {
+      const commentUpdates = {
+        inc_votes: -1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentUpdates)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment).toEqual({
+            comment_id: 1,
+            votes: 15,
+            author: "butter_bridge",
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            article_id: 9,
+            created_at: "2020-04-06T12:17:00.000Z",
+          });
+        });
+    });
+    test("Status: 200 and replies with an updated comment JSON object - Votes increment", () => {
+      const commentUpdates = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentUpdates)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment).toEqual({
+            comment_id: 1,
+            votes: 17,
+            author: "butter_bridge",
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            article_id: 9,
+            created_at: "2020-04-06T12:17:00.000Z",
+          });
+        });
+    });
+    test("Status: 404 for possibly valid comment id but NOT FOUND in this database", () => {
+      const commentUpdates = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/99999999")
+        .send(commentUpdates)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Not a valid comment id", () => {
+      const commentUpdates = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/notAnIdNo")
+        .send(commentUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Empty patch input on votes", () => {
+      const commentUpdates = {};
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Invalid key on inc_votes", () => {
+      const commentUpdates = {
+        enc_botes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+    test("Status: 400 for route BAD REQUEST - Invalid values in inc_votes", () => {
+      const commentUpdates = {
+        inc_votes: "Hi",
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentUpdates)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request - Invalid Input");
+        });
+    });
+  });
+
   describe("DELETE /api/comments/:comment_id", () => {
     test("Status: 204", () => {
       return request(app).delete("/api/comments/1").expect(204);

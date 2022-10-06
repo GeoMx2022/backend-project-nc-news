@@ -186,6 +186,21 @@ exports.createArticle = async (username, title, body, topic) => {
   }
 };
 
+exports.modifyComment = (comment_id, inc_votes) => {
+  return db
+    .query(
+      "UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;",
+      [inc_votes, comment_id]
+    )
+    .then((comment) => {
+      const updatedCommentData = comment.rows[0];
+      if (!updatedCommentData) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+      return updatedCommentData;
+    });
+};
+
 exports.removeComment = (comment_id) => {
   return db
     .query("DELETE FROM comments WHERE comment_id = $1 RETURNING *;", [

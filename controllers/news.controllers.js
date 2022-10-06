@@ -1,4 +1,4 @@
-const { fetchApi, fetchTopics, fetchUsers, fetchUserByUsername, fetchArticleById, modifyArticleById, fetchArticles, createArticle, fetchCommentsByArticleId, createComment, removeComment } = require("../models/news.models");
+const { fetchApi, fetchTopics, fetchUsers, fetchUserByUsername, fetchArticleById, modifyArticleById, fetchArticles, createArticle, fetchCommentsByArticleId, createComment, modifyComment, removeComment } = require("../models/news.models");
 
 exports.getApi = (req, res, next) => {
     fetchApi()
@@ -108,6 +108,18 @@ exports.postComment = (req, res, next) => {
     })
     .catch((err) => {
         next(err);
+    });
+};
+
+exports.updateComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  modifyComment(comment_id, inc_votes)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
