@@ -1,5 +1,5 @@
 # Views News Backend  
-
+-----
 #### Project Summary  
 Views News is an social media app. This backend is a server for the app that will allow users to do the following:
 * GET
@@ -13,10 +13,10 @@ Views News is an social media app. This backend is a server for the app that wil
 * DELETE /api/comments/:comment_id
 
 An in-depth outline query options and functionality for each endpoint is available at GET /api.  
-
+-----
 #### Hosted App  
 A hosted version of the app on Heroku can be found here: [Views News](https://nc-news-application.herokuapp.com/api)  
-
+-----
 ####  Repository  
 This repository contains all the backend code required for the Views News App.    
 
