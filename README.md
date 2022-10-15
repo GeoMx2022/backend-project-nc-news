@@ -1,5 +1,5 @@
 # Views News Backend  
------
+
 #### Project Summary  
 Views News is an social media app. This backend is a server for the app that will allow users to do the following:
 * GET
@@ -12,14 +12,17 @@ Views News is an social media app. This backend is a server for the app that wil
 * POST /api/articles/:article_id/comments
 * DELETE /api/comments/:comment_id
 
-An in-depth outline query options and functionality for each endpoint is available at GET /api.  
+An in-depth outline query options and functionality for each endpoint is available at GET /api.
+
 -----
 #### Hosted App  
 A hosted version of the app on Heroku can be found here: [Views News](https://nc-news-application.herokuapp.com/api)  
+
 -----
 ####  Repository  
-This repository contains all the backend code required for the Views News App.    
+This repository contains all the backend code required for the Views News App. 
 
+-----
 ####  SetUp & Installation Instructions
 1. Fork this repo to your own GitHub an the GitHub website.
 2. Copy the HTTPS link to your GitHub. 
@@ -46,6 +49,7 @@ This repository contains all the backend code required for the Views News App.
 
 That's it. You are done.  
 
+-----
 ####  Recommended Application Specifications  
 **NodeJs**: v18  
 **Postgres**: v14.4
