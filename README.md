@@ -1,7 +1,7 @@
-# NC News Server SetUp  
+# Views News Backend  
 
 #### Project Summary  
-NC News is an social media app that currently allows users to do the following:
+Views News is an social media app. This backend is a server for the app that will allow users to do the following:
 * GET
     * /api/topics
     * /api/users
@@ -15,10 +15,10 @@ NC News is an social media app that currently allows users to do the following:
 An in-depth outline query options and functionality for each endpoint is available at GET /api.  
 
 #### Hosted App  
-A hosted version of the app on Heroku can be found here: [NC News](https://nc-news-application.herokuapp.com/api)  
+A hosted version of the app on Heroku can be found here: [Views News](https://nc-news-application.herokuapp.com/api)  
 
 ####  Repository  
-This repository contains all the backend code required for the NC News App.    
+This repository contains all the backend code required for the Views News App.    
 
 ####  SetUp & Installation Instructions
 1. Fork this repo to your own GitHub an the GitHub website.
